@@ -1,0 +1,25 @@
+version: "1"
+
+services:
+  db:
+    image: /sqlite3:latest
+    volumes:
+      - ./database.db
+  web:
+    build: .
+    volumes:
+      - .:/config
+  web_makemigrations:
+    extends:
+      service: web
+    command: python manage.py makemigrations
+  web_migrate:
+    extends:
+      service: web
+    command: python manage.py makemigrate
+  web_run:
+    extends:
+      service: web
+    command: python manage.py runserver 0.0.0.0:8000 --settings=config.settings.local
+    ports:
+      - "8000:8000"
